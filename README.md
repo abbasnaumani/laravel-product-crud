@@ -46,7 +46,8 @@ Product CRUD built with Laravel 10 + PHP 8.1 and MySQL 8.
    ```sh
     docker compose up
     docker compose run --rm composer install
-    docker compose run --rm appserver php artisan migrate --seed
+    docker compose run --rm appserver php artisan migrate
+    docker compose run --rm appserver php artisan migrate:refresh --seed
     docker compose run --rm appserver php artisan storage:link
     docker compose run --rm npm npm install
     docker compose run --rm npm npm run build
