@@ -51,3 +51,8 @@ Product CRUD built with Laravel 10 + PHP 8.1 and MySQL 8.
     docker compose run --rm npm npm install
     docker compose run --rm npm npm run build
    ```
+7. Docker configurations:
+  ```text
+     email: developer@gmail.com
+     pass: password
+   ```

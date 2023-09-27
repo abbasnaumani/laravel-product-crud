@@ -1,7 +1,7 @@
 version: "3.1"
 
 networks:
-  tazda-network:
+  tezda-network:
     driver: bridge
 
 services:
@@ -9,7 +9,7 @@ services:
     build:
       context: .
       dockerfile: docker/nginx.dockerfile
-    container_name: tazda-webserver
+    container_name: tezda-webserver
     restart: unless-stopped
     tty: true
     ports:
@@ -27,13 +27,13 @@ services:
     depends_on:
       - appserver
     networks:
-      - tazda-network
+      - tezda-network
 
   appserver:
     build:
       context: .
       dockerfile: docker/php.dockerfile
-    container_name: tazda-appserver
+    container_name: tezda-appserver
     restart: unless-stopped
     tty: true
     volumes:
@@ -42,14 +42,14 @@ services:
     depends_on:
       - mysql
     networks:
-      - tazda-network
+      - tezda-network
 
   mysql:
     build:
       context: .
       dockerfile: docker/mysql.dockerfile
     command: --default-authentication-plugin=mysql_native_password
-    container_name: tazda-db
+    container_name: tezda-db
     restart: unless-stopped
     tty: true
     ports:
@@ -66,27 +66,27 @@ services:
     volumes:
       - ./mysql:/var/lib/mysql
     networks:
-      - tazda-network
+      - tezda-network
 
   npm:
     image: node:18.10.0
-    container_name: tazda-npm
+    container_name: tezda-npm
     volumes:
       - .:/var/www/html
     working_dir: /var/www/html
     networks:
-      - tazda-network
+      - tezda-network
 
   composer:
     build:
       context: .
       dockerfile: docker/composer.dockerfile
-    container_name: tazda-composer
+    container_name: tezda-composer
     volumes:
       - .:/var/www/html
       - ./docker/php-composer.ini:/usr/local/etc/php/conf.d/php-composer.ini
     networks:
-      - tazda-network
+      - tezda-network
 
 volumes:
   mysql:
