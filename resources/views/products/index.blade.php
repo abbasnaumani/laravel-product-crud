@@ -4,7 +4,7 @@
             <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
                 {{ __('Products') }}
             </h2>
-            <a class="flex"  href="{{ route('products.create') }}">
+            <a class="flex" href="{{ route('products.create') }}">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                      stroke="currentColor" class="w-6 h-6">
                     <path stroke-linecap="round" stroke-linejoin="round"
@@ -32,13 +32,20 @@
                         @foreach($products as $product)
                             <div class="shadow-md rounded-2xl bg-white flex flex-col gap-6 p-2">
                                 <figure class="w-full h-52 relative flex justify-center items-center">
-                                    <img
-                                        src="{{ asset('storage/'.($product->image_path ?? '')) }}"
-                                        class="max-w-full w-auto max-h-full h-auto" alt="#"/>
+                                    @if (file_exists(public_path('storage/'.($product->image_path ?? ''))))
+                                        <img
+                                            src="{{ asset('storage/'.($product->image_path ?? '')) }}"
+                                            class="max-w-full w-auto max-h-full h-auto" alt="#"/>
+                                    @else
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="150" height="150" viewBox="0 0 150 150" fill="none">
+                                            <rect width="100%" height="100%" fill="#EAEAEA"/>
+                                            <text x="50%" y="50%" text-anchor="middle" dy=".3em" font-size="24" fill="#888">No Image</text>
+                                        </svg>
+                                    @endif
                                     <a href="{{ route('products.edit', $product->id) }}"
                                        class="bg-gradient-to-r from-slate-300 to-slate-500 text-white absolute right-3 top-6 z-10 font-bold px-3 py-1 w-fit rounded-2xl uppercase leading-8">
                                         Edit
-                                        </a>
+                                    </a>
                                 </figure>
                                 <div class="flex flex-col gap-4 px-4 grow">
                                     <div class="flex justify-between">
