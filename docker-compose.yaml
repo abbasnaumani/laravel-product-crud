@@ -1,0 +1,93 @@
+version: "3.1"
+
+networks:
+  tazda-network:
+    driver: bridge
+
+services:
+  webserver:
+    build:
+      context: .
+      dockerfile: docker/nginx.dockerfile
+    container_name: tazda-webserver
+    restart: unless-stopped
+    tty: true
+    ports:
+      - '${DOCKER_APP_PORT:-80}:80'
+      - '${DOCKER_FRONT_PORT:-5173}:5173'
+      - '${DOCKER_SSL_PORT:-9017}:9016'
+    expose:
+      - "${DOCKER_APP_PORT:-80}"
+      - "${DOCKER_SSL_PORT:-9017}"
+    volumes:
+      - .:/var/www/html
+      - ./docker/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./docker/certs:/certs
+    working_dir: /var/www/html
+    depends_on:
+      - appserver
+    networks:
+      - tazda-network
+
+  appserver:
+    build:
+      context: .
+      dockerfile: docker/php.dockerfile
+    container_name: tazda-appserver
+    restart: unless-stopped
+    tty: true
+    volumes:
+      - .:/var/www/html
+    working_dir: /var/www/html
+    depends_on:
+      - mysql
+    networks:
+      - tazda-network
+
+  mysql:
+    build:
+      context: .
+      dockerfile: docker/mysql.dockerfile
+    command: --default-authentication-plugin=mysql_native_password
+    container_name: tazda-db
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "${DOCKER_DB_PORT:-3366}:3306"
+    expose:
+      - "${DOCKER_DB_PORT:-3366}"
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      #      MYSQL_ROOT_HOST: "%"
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      #      MYSQL_ALLOW_EMPTY_PASSWORD: 1
+    volumes:
+      - ./mysql:/var/lib/mysql
+    networks:
+      - tazda-network
+
+  npm:
+    image: node:18.10.0
+    container_name: tazda-npm
+    volumes:
+      - .:/var/www/html
+    working_dir: /var/www/html
+    networks:
+      - tazda-network
+
+  composer:
+    build:
+      context: .
+      dockerfile: docker/composer.dockerfile
+    container_name: tazda-composer
+    volumes:
+      - .:/var/www/html
+      - ./docker/php-composer.ini:/usr/local/etc/php/conf.d/php-composer.ini
+    networks:
+      - tazda-network
+
+volumes:
+  mysql:
+    driver: local
