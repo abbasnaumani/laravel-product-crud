@@ -35,6 +35,7 @@ Product CRUD built with Laravel 10 + PHP 8.1 and MySQL 8.
    ```sh
    php artisan migrate --seed
    php artisan storage:link
+   sudo chmod -R 777 storage/
    ```
 5. Install NPM packages & create build
    ```sh
@@ -51,6 +52,7 @@ Product CRUD built with Laravel 10 + PHP 8.1 and MySQL 8.
     docker compose run --rm appserver php artisan storage:link
     docker compose run --rm npm npm install
     docker compose run --rm npm npm run build
+    sudo chmod -R 777 storage/
    ```
 7. Docker configurations:
   ```text
